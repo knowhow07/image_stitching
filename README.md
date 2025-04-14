@@ -12,5 +12,5 @@ mkdir build
 cd build/
 cmake ..
 cmake --build . --config Release
-./Release/image_stitcher.exe
+./Release/image_stitcher.exe <image_path1> <imagepath2> <imagepath3>
 ```
