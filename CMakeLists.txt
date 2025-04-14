@@ -4,7 +4,7 @@ project(ImageStitcher)
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(OpenCV_DIR "C:/Users/devme/Downloads/opencv/build/x64/vc16/lib/") 
 # Find the OpenCV package
 find_package(OpenCV REQUIRED)
 

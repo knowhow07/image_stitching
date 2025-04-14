@@ -2,8 +2,29 @@ from PIL import Image, ImageDraw
 import numpy as np
 from typing import Union, Tuple, List
 from scipy.ndimage import distance_transform_edt
-from helpers import genSIFTMatches
+from skimage import color, feature
 
+
+def genSIFTMatches(img_s, img_d):
+    # Convert images to grayscale
+    gray_s = color.rgb2gray(img_s)
+    gray_d = color.rgb2gray(img_d)
+
+    # Compute SIFT features
+    sift = feature.SIFT()
+    sift.detect_and_extract(gray_s)
+    Fs, Ds = sift.keypoints, sift.descriptors
+    sift.detect_and_extract(gray_d)
+    Fd, Dd = sift.keypoints, sift.descriptors
+
+    # Match descriptors
+    matches = feature.match_descriptors(Ds, Dd, cross_check=True)
+
+    # Extract the locations of matched keypoints
+    xs = Fs[matches[:, 0]]
+    xd = Fd[matches[:, 1]]
+
+    return xs, xd
 
 def computeHomography(src_pts_nx2: np.ndarray, dest_pts_nx2: np.ndarray) -> np.ndarray:
     '''
@@ -53,44 +74,6 @@ def applyHomography(H_3x3: np.ndarray, src_pts_nx2: np.ndarray) ->  np.ndarray:
     return dest[:,:2]
 
 
-def showCorrespondence(img1: Image.Image, img2: Image.Image, pts1_nx2: np.ndarray, pts2_nx2: np.ndarray) -> Image.Image:
-    '''
-    Show the correspondences between the two images.
-    Arguments:
-        img1: the first image.
-        img2: the second image.
-        pts1_nx2: the coordinates of the points in the first image (nx2 numpy array).
-        pts2_nx2: the coordinates of the points in the second image (nx2 numpy array).
-    Returns:
-        result: image depicting the correspondences.
-    '''
-    img1_pil = Image.fromarray(img1)
-    img2_pil = Image.fromarray(img2)
-   
-
-    # Create new images to draw lines on
-    result_width = img1.shape[1] + img2.shape[1]
-    result_height = max(img1.shape[0], img2.shape[0])
-    result = Image.new('RGB', (result_width, result_height))
-
-    # Paste the original images onto the result image
-    result.paste(img1_pil, (0, 0))
-    result.paste(img2_pil, (img1.shape[1], 0))
-
-    # Create a draw object
-    draw = ImageDraw.Draw(result)
-    
-
-    # Draw lines between corresponding points
-    for pt1, pt2 in zip(pts1_nx2, pts2_nx2):
-        pt2a = pt2[0]+ img1.shape[1]
-        print(pt1,pt2)
-        
-        draw.line((pt1[0],pt1[1],pt2a,pt2[1]), fill='green', width=2)
-
-    result_arr = np.array(result)
-
-    return result_arr
 
 
 def backwardWarpImg(src_img: Image.Image, destToSrc_H: np.ndarray, canvas_shape: Union[Tuple, List]) -> Tuple[Image.Image, Image.Image]:
@@ -190,6 +173,7 @@ def runRANSAC(src_pt: np.ndarray, dest_pt: np.ndarray, ransac_n: int, eps: float
             
     return max_inliers_id, H_max
 #https://kushalvyas.github.io/stitching.html
+
 def stitchImg(*args: Image.Image) -> Image.Image:
     '''
     Stitch a list of images.
