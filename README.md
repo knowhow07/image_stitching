@@ -14,3 +14,7 @@ cmake ..
 cmake --build . --config Release
 ./Release/image_stitcher.exe <image_path1> <imagepath2> <imagepath3>
 ```
+
+
+# Ubuntu Setup
+- g++, cmake, libopencv-devs
