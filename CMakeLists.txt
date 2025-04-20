@@ -11,6 +11,9 @@ if(CUDA_FOUND)
     enable_language(CUDA)
 endif()
 
+# Find OpenMP
+find_package(OpenMP REQUIRED)
+
 # Set C++ and CUDA standard
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
@@ -55,6 +58,13 @@ target_include_directories(gpu_stitcher PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(gpu_stitcher PRIVATE ${OpenCV_LIBS})
 target_link_libraries(gpu_stitcher PRIVATE ${CUDA_LIBRARIES})
 
+# OpenMP stitching library
+add_library(openmp_stitcher ${CMAKE_CURRENT_SOURCE_DIR}/src/openmp_stitching.cpp)
+target_include_directories(openmp_stitcher PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/include)
+target_include_directories(openmp_stitcher PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(openmp_stitcher PRIVATE ${OpenCV_LIBS})
+target_link_libraries(openmp_stitcher PUBLIC OpenMP::OpenMP_CXX)
+
 # Add the base executable
 add_executable(base_stitcher_main ${CMAKE_CURRENT_SOURCE_DIR}/src/base_stitching_main.cpp)
 target_link_libraries(base_stitcher_main PRIVATE base_stitcher)
@@ -69,3 +79,11 @@ target_include_directories(gpu_stitcher_main PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_include_directories(gpu_stitcher_main  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/include)
 target_link_libraries(gpu_stitcher_main PRIVATE ${OpenCV_LIBS})
 target_link_libraries(gpu_stitcher_main PRIVATE ${CUDA_LIBRARIES})
+
+# Add OpenMP executable
+add_executable(openmp_stitcher_main ${CMAKE_CURRENT_SOURCE_DIR}/src/openmp_stitching_main.cpp)
+target_link_libraries(openmp_stitcher_main PRIVATE openmp_stitcher)
+target_include_directories(openmp_stitcher_main PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_include_directories(openmp_stitcher_main  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/include)
+target_link_libraries(openmp_stitcher_main PRIVATE ${OpenCV_LIBS})
+target_link_libraries(openmp_stitcher_main PUBLIC OpenMP::OpenMP_CXX)
