@@ -7,7 +7,7 @@
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudafeatures2d.hpp>
 
-#include "base_stitching.h"
+#include "gpu_stitching.h"
 
 void GPUImageStitcher::setMinMatches(int matches) { min_matches = matches; }
 void GPUImageStitcher::setRatioThreshold(float ratio) { ratio_thresh = ratio; }
@@ -28,7 +28,7 @@ cv::Mat GPUImageStitcher::stitch(const cv::Mat& img1, const cv::Mat& img2) {
     // Use FLANN-based matcher for speed
     std::cerr << "Matching features..." << std::endl;
     std::vector<std::vector<cv::DMatch>> knn_matches;
-    cv::Ptr<cv::cuda::DescriptorMatcher> gpu_matcher = cv::cuda::DescriptorMatcher::create(cv::cuda::DescriptorMatcher::FLANNBASED);
+    cv::Ptr<cv::cuda::DescriptorMatcher> gpu_matcher = cv::cuda::DescriptorMatcher::createBFMatcher(cv::NORM_L2);
     gpu_matcher->knnMatch(descriptors1, descriptors2, knn_matches, 2);
     std::cerr << "Feature matching complete." << std::endl;
     // Filter matches using Lowe's ratio test
