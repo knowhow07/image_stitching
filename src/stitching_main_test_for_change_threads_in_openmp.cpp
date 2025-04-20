@@ -4,17 +4,24 @@
 #include <iostream>
 #include <vector>
 
-#include "base_stitching.h"
+#include "openmp_stitching.h"
 
 // Example usage
 int main(int argc, char** argv) {
-    if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " <image1> <image2> [<image3> ...]" << std::endl;
+    if (argc < 4) {
+        std::cerr << "Usage: " << argv[0] << " <num_threads> <image1> <image2> [<image3> ...]" << std::endl;
+        return -1;
+    }
+
+    // Read number of threads
+    int num_threads = std::stoi(argv[1]);
+    if (num_threads <= 0) {
+        std::cerr << "Number of threads must be > 0" << std::endl;
         return -1;
     }
     
     std::vector<cv::Mat> images;
-    for (int i = 1; i < argc; i++) {
+    for (int i = 2; i < argc; i++) {
         cv::Mat img = cv::imread(argv[i]);
         if (img.empty()) {
             std::cerr << "Could not read image: " << argv[i] << std::endl;
@@ -23,7 +30,8 @@ int main(int argc, char** argv) {
         images.push_back(img);
     }
     
-    BaseImageStitcher stitcher;
+    OpenmpImageStitcher stitcher;
+    stitcher.setNumThreads(num_threads); 
     
     // Optional: Set custom parameters
     // stitcher.setMinMatches(15);
