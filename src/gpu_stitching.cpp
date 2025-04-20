@@ -12,18 +12,18 @@
 void GPUImageStitcher::setMinMatches(int matches) { min_matches = matches; }
 void GPUImageStitcher::setRatioThreshold(float ratio) { ratio_thresh = ratio; }
     
-// Main stitching function
 cv::Mat GPUImageStitcher::stitch(const cv::Mat& img1, const cv::Mat& img2) {
-    // 1. Feature detection and extraction
+    // Feature detection and extraction
     std::vector<cv::KeyPoint> keypoints1, keypoints2;
     cv::Mat descriptors1, descriptors2;
     
     cv::Ptr<cv::SIFT> detector = cv::SIFT::create();
     std::cerr <<"Detecting features..." << std::endl;
-    // This step is parallelizable - can process both images independently
+
     detector->detectAndCompute(img1, cv::noArray(), keypoints1, descriptors1);
     detector->detectAndCompute(img2, cv::noArray(), keypoints2, descriptors2);
     std::cerr << "Feature detection complete." << std::endl;
+    
     // 2. Feature matching
     // Use FLANN-based matcher for speed
     std::cerr << "Matching features..." << std::endl;

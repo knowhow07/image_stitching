@@ -55,9 +55,17 @@ target_include_directories(gpu_stitcher PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(gpu_stitcher PRIVATE ${OpenCV_LIBS})
 target_link_libraries(gpu_stitcher PRIVATE ${CUDA_LIBRARIES})
 
-# Add the executable
-add_executable(base_stitcher_main ${CMAKE_CURRENT_SOURCE_DIR}/src/stitching_main.cpp)
+# Add the base executable
+add_executable(base_stitcher_main ${CMAKE_CURRENT_SOURCE_DIR}/src/base_stitching_main.cpp)
 target_link_libraries(base_stitcher_main PRIVATE base_stitcher)
 target_include_directories(base_stitcher_main PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_include_directories(base_stitcher_main  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/include)
 target_link_libraries(base_stitcher_main PRIVATE ${OpenCV_LIBS})
+
+# Add the GPU executable
+add_executable(gpu_stitcher_main ${CMAKE_CURRENT_SOURCE_DIR}/src/gpu_stitching_main.cpp)
+target_link_libraries(gpu_stitcher_main PRIVATE gpu_stitcher)
+target_include_directories(gpu_stitcher_main PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_include_directories(gpu_stitcher_main  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/include)
+target_link_libraries(gpu_stitcher_main PRIVATE ${OpenCV_LIBS})
+target_link_libraries(gpu_stitcher_main PRIVATE ${CUDA_LIBRARIES})
