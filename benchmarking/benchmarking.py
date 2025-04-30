@@ -4,8 +4,8 @@ import subprocess
 
 sizes = [64, 128, 256, 512, 1024]
 benchmark_type = ["NISwGSP", "UDIS-D", "Parallax_tolerant"]
-resized_images_dir = "/home/ubuntu/image_stitching/resized_images"
 home_dir = os.getcwd() + "/.."
+resized_images_dir = home_dir + "/resized_images"
 build_dir = home_dir + "/build"
 benchmark_exec_name = "./benchmark_exec "
 
@@ -37,10 +37,16 @@ def run_benchmark(bench_hardware: str):
         res = subprocess.run(benchmark_command, shell=True, cwd=build_dir, capture_output=True)
         str_output = res.stdout.decode('utf-8')
         str_output_split = str_output.split("\n")
+        flag = False
         for line in str_output_split:
           if "PROCESSING TIME: " in line:
             output_list.append(get_processing_time(line))
+            flag = True
             break
+
+        if not flag:
+          output_list.append("NaN")
+
 
       bench_writer.writerow(output_list)
 
@@ -53,4 +59,6 @@ run_benchmark("openmp4")
 run_benchmark("openmp8")
 run_benchmark("openmp16")
 run_benchmark("openmp32")
+run_benchmark("openmp64")
+run_benchmark("openmp128")
 

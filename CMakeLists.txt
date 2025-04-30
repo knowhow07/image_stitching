@@ -11,6 +11,10 @@ if(CUDA_FOUND)
     enable_language(CUDA)
 endif()
 
+set(CMAKE_CUDA_COMPILER "/usr/local/cuda-12.6/bin/nvcc")
+set(CUDA_MAJOR_VERSION 12)
+set(CUDA_MINOR_VERSION 6)
+
 # Find OpenMP
 find_package(OpenMP REQUIRED)
 
@@ -19,7 +23,7 @@ set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CUDA_ARCHITECTURES 75)
+set(CMAKE_CUDA_ARCHITECTURES 80)
 
 # Print debugging info
 message(STATUS "CUDA compiler: ${CMAKE_CUDA_COMPILER}")
@@ -38,7 +42,7 @@ include_directories(/usr/local/cuda/include)
 
 #set(OpenCV_DIR "C:/Users/devme/Downloads/opencv/build/x64/vc16/lib/") 
 # Find the OpenCV package
-find_package(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED PATHS "$ENV{HOME}/opencv-install")
 
 # Print OpenCV version and include directories for debugging
 message(STATUS "OpenCV version: ${OpenCV_VERSION}")
