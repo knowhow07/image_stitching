@@ -171,8 +171,8 @@ def plot_across_benchmarks(df, size):
 
 
 res_df = combine_csv_files(os.getcwd() + "/results")
-print(res_df)
-plot_mean(res_df)
-plot_all_means(res_df)
-plot_across_benchmarks(res_df, 256)
-plot_across_benchmarks(res_df, 1024)
+#print(res_df)
+#plot_mean(res_df)
+#plot_all_means(res_df)
+#plot_across_benchmarks(res_df, 256)
+plot_across_benchmarks(res_df, 64)
