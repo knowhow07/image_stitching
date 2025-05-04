@@ -69,10 +69,11 @@ def plot_mean(df):
 
   plt.figure(figsize=(12, 6))
   bars = plt.bar(df_sources_sorted, df_means, color='#cc7af4')
-  plt.xticks(rotation=30, ha='right')
-  plt.title('Mean Time Taken per Method (Across All Image Sizes)',fontsize=12)
-  plt.xlabel('Method',fontsize=12)
-  plt.ylabel('Mean Time (Across All Sizes) (ms)',fontsize=12)
+  plt.xticks(rotation=30, ha='right', fontsize=16)
+  plt.yticks(fontsize=20)
+  plt.title('Mean Time Taken per Method (Across All Image Sizes)',fontsize=20)
+  plt.xlabel('Method',fontsize=20)
+  plt.ylabel('Mean Time (Across All Sizes) (ms)',fontsize=20)
   plt.subplots_adjust(bottom=0.25)
   plt.savefig('general_means.png')
   #plt.show()
@@ -108,14 +109,16 @@ def plot_all_means(df):
     rects = ax.bar(x + offset, measurements, width, label=f'Size: {size}x{size}', color=colors[i % len(colors)])
   
   # Add labels, title and legend
-  ax.set_xlabel('Method')
-  ax.set_ylabel('Mean Time (ms)')
-  ax.set_title('Mean Time Taken per Method (for each size)')
+  ax.set_xlabel('Method', fontsize=20)
+  ax.set_ylabel('Mean Time (ms)', fontsize=20)
+  ax.set_title('Mean Time Taken per Method (for each size)', fontsize=20)
   ax.set_xticks(x)
-  ax.set_xticklabels(df_sources_sorted, rotation=45, ha='right')
-  ax.legend()
+  ax.set_xticklabels(df_sources_sorted, rotation=45, ha='right',fontsize=16)
+  ax.set_yticks([0,200,400,600,800,1000])
+  ax.set_yticklabels([0,200,400,600,800,1000], fontsize=16)
+  ax.legend(fontsize=20, loc='upper left', bbox_to_anchor=(1.02, 1), borderaxespad=0)
   
-  fig.tight_layout()
+  fig.tight_layout(rect=[0, 0, 0.95, 1])  # Leave space on the right
   
   plt.savefig('means_with_sizes.png')
   #plt.show()
@@ -156,12 +159,13 @@ def plot_across_benchmarks(df, size):
     rects = ax.bar(x + offset, measurements, width, label=f'Workload: {workload}', color=colors[i % len(colors)])
   
   # Add labels, title and legend
-  ax.set_xlabel('Method')
-  ax.set_ylabel('Mean Time (ms)')
-  ax.set_title(f'Mean Time Taken per Method with Image Size {size}x{size} (for each workload)')
+  ax.set_xlabel('Method', fontsize=20)
+  ax.set_ylabel('Mean Time (ms)', fontsize=20)
+  ax.set_title(f'Mean Time Taken per Method with Image Size {size}x{size} (for each workload)', fontsize=20)
   ax.set_xticks(x)
-  ax.set_xticklabels(df_sources_sorted, rotation=45, ha='right')
-  ax.legend()
+  ax.set_xticklabels(df_sources_sorted, rotation=45, ha='right', fontsize=16)
+  ax.legend(fontsize=20)
+  ax.tick_params(axis='y', labelsize=16)
   
   fig.tight_layout()
   
@@ -172,7 +176,8 @@ def plot_across_benchmarks(df, size):
 
 res_df = combine_csv_files(os.getcwd() + "/results")
 #print(res_df)
-#plot_mean(res_df)
-#plot_all_means(res_df)
-#plot_across_benchmarks(res_df, 256)
+plot_mean(res_df)
+plot_all_means(res_df)
+plot_across_benchmarks(res_df, 256)
 plot_across_benchmarks(res_df, 64)
+plot_across_benchmarks(res_df, 1024)
